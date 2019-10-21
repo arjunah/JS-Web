@@ -6,24 +6,24 @@ module.exports = (req, res) => {
     let filePath;
     switch (method) {
         case "GET":
-            filePath = path.normalize(path.join(__dirname, "../views/home/index.html"));
-            const   homeHTMLStream = fs.createReadStream(filePath);
+            filePath = path.normalize(path.join(__dirname, "../views/shelterCat.html"));
+            const   shelterCatHTMLStream = fs.createReadStream(filePath);
 
-            homeHTMLStream.once("data", () => {
+            shelterCatHTMLStream.once("data", () => {
                 res.writeHead(200, {
                     "Content-Type": "text/html" 
                 });
             });
 
-            homeHTMLStream.on("data", (data) => {
+            shelterCatHTMLStream.on("data", (data) => {
                 res.write(data);
             });
 
-            homeHTMLStream.on("end", () => {
+            shelterCatHTMLStream.on("end", () => {
                 res.end();
             });
 
-            homeHTMLStream.on("error", (error) => {
+            shelterCatHTMLStream.on("error", (error) => {
                 res.writeHead(404, {
                     "Content-Type": "text/plain"
                 });

@@ -4,7 +4,7 @@ const { port, URLs } = require("./config/config");
 const handlers = require("./handlers")
 
 const app = http.createServer((req, res) => {
-    
+
     let route = url.parse(req.url).path;
 
     if (route.startsWith("/content")) {
@@ -12,8 +12,8 @@ const app = http.createServer((req, res) => {
     } else {
         Object.keys(URLs).forEach(url => {
             if (URLs[url] === route) {
-                route === "/" ? route = "home" : route;
-                handlers[route](req, res); 
+                route === "/" ? route = "/home" : route;
+                handlers[route.slice(1)](req, res); 
             }
         });
     }

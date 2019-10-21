@@ -49,5 +49,4 @@ module.exports = (req, res) => {
             });
             break;
     }
-
 }
