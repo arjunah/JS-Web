@@ -15,12 +15,32 @@ module.exports = (req, res) => {
                 });
             });
 
+            let addCatHTML = "";
             addCatHTMLStream.on("data", (data) => {
-                res.write(data);
+                addCatHTML += data;
             });
 
             addCatHTMLStream.on("end", () => {
-                res.end();
+                filePath = path.normalize(path.join(__dirname, "../data/breeds.json"));
+                const breedsStream = fs.createReadStream(filePath, {encoding: "utf-8"}); 
+                let breedsData = "";
+                breedsStream.on("data", (data) => {
+                    breedsData += data;
+                });
+                let breeds;
+                breedsStream.on("end", () => {
+                    breeds = JSON.parse(breedsData);
+
+                    let breedsOptions = "";
+                    breeds.map(breed => {
+                        return breedsOptions += `<option value="${breed}">${breed}</option>`;
+                    });
+                    console.log(breedsOptions);
+                    let output = addCatHTML.replace("{{breeds}}", breedsOptions);
+    
+                    res.write(output);
+                    res.end();
+                });
             });
 
             addCatHTMLStream.on("error", (error) => {
