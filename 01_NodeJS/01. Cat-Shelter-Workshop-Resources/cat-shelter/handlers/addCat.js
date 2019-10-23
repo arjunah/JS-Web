@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const formidable = require("formidable");
 
 module.exports = (req, res) => {
     const method = req.method;
@@ -35,7 +36,6 @@ module.exports = (req, res) => {
                     breeds.map(breed => {
                         return breedsOptions += `<option value="${breed}">${breed}</option>`;
                     });
-                    console.log(breedsOptions);
                     let output = addCatHTML.replace("{{breeds}}", breedsOptions);
     
                     res.write(output);
@@ -50,5 +50,76 @@ module.exports = (req, res) => {
                 console.log(error);
             });
             break;
+
+        case "POST":
+            let form = new formidable.IncomingForm();
+
+            form.parse(req, (error, fields, files) => {
+
+                if (error) {
+                    console.log(error);
+                };
+
+                let oldPath = files.upload.path;
+                let newPath = path.normalize(path.join(__dirname, "../content/images/" + files.upload.name));
+
+                const copyImg = (oldPath, newPath) => {
+                    return new Promise ((resolve, reject) => {
+                        fs.copyFile(oldPath, newPath, (error) => {
+                            if (error) {
+                                reject(error);
+                            }
+                        })
+                        resolve();
+                    });
+                };
+
+                const delImg = (oldPath) => {
+                    return new Promise ((resolve, reject) => {
+                        fs.unlink(oldPath, (error) => {
+                            if (error) {
+                                reject(error);
+                            }
+                        })
+                        resolve();
+                    });
+                };
+
+                copyImg(oldPath, newPath).then(res => delImg(oldPath));
+
+                let catsData = "";
+                filePath = path.normalize(path.join(__dirname, "../data/cats.json"));
+                const catsReadStream = fs.createReadStream(filePath, {encoding: "utf-8"});
+
+                catsReadStream.on("data", (data) => {
+                    catsData += data;
+                });
+
+                catsReadStream.on("end", () => {
+                    let cats = JSON.parse(catsData);
+                    let cat = {
+                        id: cats.length + 1,
+                        ...fields,
+                        image: files.upload.name
+                    }
+                    cats.push(cat);
+
+                    let catsUpdated = JSON.stringify(cats);
+
+                    let catsWrite = fs.createWriteStream(filePath, {encoding: "utf-8"});
+                    catsWrite.write(catsUpdated);
+                    catsWrite.end();
+                    catsWrite.on("error", (error) => {
+                        res.writeHead(404, {
+                            "Content-Type": "text/plain"
+                        });
+                        console.log(error);
+                    });
+                });
+            });
+            res.writeHead(302, {
+                "Location": "/"
+            });
+            res.end();
     }
 }
