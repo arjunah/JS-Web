@@ -9,6 +9,8 @@ const app = http.createServer((req, res) => {
 
     if (route.startsWith("/content")) {
         handlers.staticContent(req, res);
+    } else if (route.startsWith("/editCat")) {
+        handlers.editCat(req, res);
     } else {
         Object.keys(URLs).forEach(url => {
             if (URLs[url] === route) {

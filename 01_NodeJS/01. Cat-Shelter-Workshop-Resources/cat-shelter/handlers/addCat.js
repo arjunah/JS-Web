@@ -109,6 +109,12 @@ module.exports = (req, res) => {
                     let catsWrite = fs.createWriteStream(filePath, {encoding: "utf-8"});
                     catsWrite.write(catsUpdated);
                     catsWrite.end();
+                    catsWrite.on("finish", () => {
+                        res.writeHead(302, {
+                            "Location": "/"
+                        });
+                        res.end();
+                    })
                     catsWrite.on("error", (error) => {
                         res.writeHead(404, {
                             "Content-Type": "text/plain"
@@ -116,10 +122,6 @@ module.exports = (req, res) => {
                         console.log(error);
                     });
                 });
-            });
-            res.writeHead(302, {
-                "Location": "/"
-            });
-            res.end();
+            });    
     }
 }

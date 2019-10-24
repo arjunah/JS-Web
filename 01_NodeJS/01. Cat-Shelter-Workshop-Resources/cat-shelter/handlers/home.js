@@ -41,8 +41,8 @@ module.exports = (req, res) => {
                                 <p><span>Breed: </span>${cat.breed}</p>
                                 <p><span>Description: </span>${cat.description}</p>
                                 <ul class="buttons">
-                                    <li class="btn edit"><a href="/editCat">Change Info</a></li>
-                                    <li class="btn delete"><a href="/shelterCat">New Home</a></li>
+                                    <li class="btn edit"><a href="/editCat/${cat.id}">Change Info</a></li>
+                                    <li class="btn delete"><a href="/shelterCat/${cat.id}">New Home</a></li>
                                 </ul>
                             </li>
                         `
