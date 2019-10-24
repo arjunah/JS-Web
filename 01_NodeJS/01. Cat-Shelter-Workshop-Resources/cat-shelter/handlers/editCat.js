@@ -51,7 +51,7 @@ module.exports = (req, res) => {
                         });
 
                         let output = `
-                            <form action="/editCat" method="POST" class="cat-form" enctype="multipart/form-data">
+                            <form action="/editCat/${cat.id}" method="POST" class="cat-form" enctype="multipart/form-data">
                                 <h2>Edit Cat</h2>
                                 <label for="name">Name</label>
                                 <input type="text" id="name" value="${cat.name}">
@@ -82,6 +82,6 @@ module.exports = (req, res) => {
             break;
         
         case "POST":
-            
+
     }
 }
