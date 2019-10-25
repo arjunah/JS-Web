@@ -5,7 +5,8 @@ const URLs = {
     addBreedURL: "/addBreed",
     addCatURL: "/addCat",
     shelterCatURL: "/shelterCat",
-    editCatURL: "/editCat"
+    editCatURL: "/editCat",
+    searchURL: "/search"
 }
 
 module.exports = {
