@@ -11,6 +11,8 @@ const app = http.createServer((req, res) => {
         handlers.staticContent(req, res);
     } else if (route.startsWith("/editCat")) {
         handlers.editCat(req, res);
+    } else if (route.startsWith("/shelterCat")) {
+        handlers.shelterCat(req, res);
     } else {
         Object.keys(URLs).forEach(url => {
             if (URLs[url] === route) {
