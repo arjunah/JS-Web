@@ -1,0 +1,15 @@
+<h1>{{cube.name}}</h1>
+<img class="cube" src={{cube.imageURL}}>
+<div class="details">
+    <p><span>Description:</span>{{cube.description}}</p>
+    <p><span>Difficulty level:</span>{{cube.difficulty}}</p>
+    <a class="btn" href="/">Back</a>
+</div>
+{{#each accessories}}
+{{> accessory}}
+{{else}}
+<h2>Accessories</h2>
+<div class="accessories">
+    <h3 class="italic">This cube has no accessories yet...</h3>
+</div>
+{{/each}}
