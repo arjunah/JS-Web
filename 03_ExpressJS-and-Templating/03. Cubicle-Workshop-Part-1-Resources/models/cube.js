@@ -1,4 +1,4 @@
-module.exports = class Cube {
+class Cube {
     constructor(id, name, description, imageURL, difficulty) {
         this.id = id;
         this.name = name;
@@ -7,3 +7,5 @@ module.exports = class Cube {
         this.difficulty = difficulty;
     }
 }
+
+module.exports = Cube;

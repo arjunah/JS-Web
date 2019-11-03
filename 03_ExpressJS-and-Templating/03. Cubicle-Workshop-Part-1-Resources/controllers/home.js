@@ -9,8 +9,5 @@ module.exports = async function homeController (req, res, next) {
         case "GET":
             res.render("index", { cubes });
             break;
-
-        case "POST":
-            break;
     }
 } 
