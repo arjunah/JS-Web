@@ -20,6 +20,7 @@ module.exports = (app) => {
     app.post("/search", searchController);
 
     app.get("/add-accessory", addAccessoryController);
+    app.post("/add-accessory", addAccessoryController);
 
     app.get("*", notFoundController); // handles all other routes with 404; should be last
 };

@@ -1,39 +1,32 @@
-const path = require("path");
-const fs = require("fs");
-const Cube = require("../models/cube");
+const { Cube, Accessory } = require("../models/models");
 
 function getCubes () {
-    return new Promise ((resolve, reject) => {
-        let cubes;
-        fs.readFile(path.join(__dirname, "database.json"), (err, data) => {
-            if (err) {
-                reject(err);
-            } else {
-                cubes = JSON.parse(data);
-                resolve(cubes);
-            }
-        });
-    });
+    return  Cube.find();
 }
 
-function addCube (formData) {
-    return new Promise ((resolve, reject) => {
-        let cubes;
-        getCubes().then(cubes => {
-            cubes = cubes;
-            const { name, description, imageURL, difficulty } = formData;
-            const newCube = new Cube(cubes.length + 1, name, description, imageURL, difficulty);
-            cubes.push(newCube);
+function getCubeDetails (cubeID) {
+    return Cube.findById(cubeID);
+}
 
-            fs.writeFile(path.join(__dirname, "database.json"), JSON.stringify(cubes), (err) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
-            });
-        }).catch(err => console.log(err));     
-    }); 
+function addCube (formData, next) {
+     const newCube = new Cube(
+         {
+           name: formData.name,
+           description: formData.description,
+           imageURL: formData.imageURL,
+           difficulty: formData.difficulty  
+         }
+     );
+
+     newCube.save(function (error) {
+         if (error) {
+             next(error);
+         }
+     });
+}
+
+function addAccessory (formData, next) {
+    
 }
 
 function validateSearch (res, from, to) {
@@ -62,6 +55,7 @@ function searchCubes (search, from, to, allCubes) {
 
 module.exports = {
     getCubes,
+    getCubeDetails,
     addCube,
     validateSearch,
     searchCubes

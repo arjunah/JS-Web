@@ -1,6 +1,6 @@
 const { addCube } = require("../config/helpers");
 
-module.exports = async function createController (req, res, next) {
+module.exports = function createController (req, res, next) {
 
     const method = req.method;
 
@@ -10,7 +10,7 @@ module.exports = async function createController (req, res, next) {
             break;
         case "POST":
             const formData = req.body;
-            await addCube(formData);
+            addCube(formData, next);
             res.redirect("/");
             break;
     }
