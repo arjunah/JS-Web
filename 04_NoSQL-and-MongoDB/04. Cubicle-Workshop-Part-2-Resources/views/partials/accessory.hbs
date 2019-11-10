@@ -1,8 +1,6 @@
-<h2>Accessories</h2>
-<div class="accessories">
-    <div class="accessory">
-        <img src={{this.imageURL}} alt={{this.name}}>
-        <h3>{{this.name}}</h3>
-        <p>{{this.description}}</p>
-    </div>
+<div class="accessory">
+    <img src={{this.imageURL}} alt={{this.name}}>
+    <h3>{{this.name}}</h3>
+    <p>{{this.description}}</p>
+    <a class="btn" href="/delete-accessory/{{this._id}}&{{@root.cubeID}}">Delete</a>
 </div>

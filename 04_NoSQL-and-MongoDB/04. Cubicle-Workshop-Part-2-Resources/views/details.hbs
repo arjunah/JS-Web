@@ -5,11 +5,11 @@
     <p><span>Difficulty level:</span>{{cube.difficulty}}</p>
     <a class="btn" href="/">Back</a>
 </div>
-{{#each accessories}}
-{{> accessory}}
-{{else}}
 <h2>Accessories</h2>
 <div class="accessories">
-    <h3 class="italic">This cube has no accessories yet...</h3>
-</div>
+{{#each cube.accessories}}
+{{> accessory}}
+{{else}}
+<h3 class="italic">This cube has no accessories yet...</h3>
 {{/each}}
+</div>

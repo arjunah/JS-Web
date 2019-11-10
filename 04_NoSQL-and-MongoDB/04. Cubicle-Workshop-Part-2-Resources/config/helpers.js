@@ -5,7 +5,7 @@ function getCubes () {
 }
 
 function getCubeDetails (cubeID) {
-    return Cube.findById(cubeID);
+    return Cube.findById(cubeID).populate("accessories");
 }
 
 function addCube (formData, next) {
@@ -25,9 +25,48 @@ function addCube (formData, next) {
      });
 }
 
-function addAccessory (formData, next) {
-    
+async function getAccessories (cubeID, next) {
+    let accessories;
+    try {
+        accessories = await Accessory.find().where("cubes").nin([cubeID]);
+    } catch (error) {
+        next(error)
+    }
+    return accessories;
 }
+
+function addAccessory (formData, next) {
+    const newAccessory = new Accessory(
+        {
+            name: formData.name,
+            description: formData.description,
+            imageURL: formData.imageURL
+        }
+    );
+
+    newAccessory.save(function (error) {
+        if (error) {
+            next(error);
+        }
+    })
+}
+
+function attachAccessory (req, formData, next) {
+    const accessoryID = formData.accessory;
+    const cubeID = req.params.id;
+
+    Cube.findByIdAndUpdate(cubeID, { $push: { accessories: accessoryID }}, function (error) {
+        if (error) {
+            next(error)
+        }
+    })
+
+    Accessory.findByIdAndUpdate(accessoryID, { $push: { cubes: cubeID } }, function (error) {
+        if (error) {
+            next(error)
+        }
+    })
+} 
 
 function validateSearch (res, from, to) {
     if ((from && from < 1) || (to && (to < 1 || to < from))) {
@@ -57,6 +96,9 @@ module.exports = {
     getCubes,
     getCubeDetails,
     addCube,
+    getAccessories,
+    addAccessory,
+    attachAccessory,
     validateSearch,
     searchCubes
 }
