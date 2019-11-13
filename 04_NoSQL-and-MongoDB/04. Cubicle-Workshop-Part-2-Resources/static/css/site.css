@@ -98,6 +98,7 @@ button, main a.btn {
     text-decoration: none;
     display: inline-block;
     font-size: 18px;
+    font-style: normal;
     width: 35%;
     margin: 12px;
     border-radius: 4px;

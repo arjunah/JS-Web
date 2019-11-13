@@ -27,7 +27,7 @@ function addCube (formData, next) {
 
 async function getAccessories (cubeID, next) {
     let accessories;
-    try {
+    try {               // filter out the accessories attached to a cube
         accessories = await Accessory.find().where("cubes").nin([cubeID]);
     } catch (error) {
         next(error)
@@ -53,7 +53,7 @@ function addAccessory (formData, next) {
 
 function attachAccessory (req, formData, next) {
     const accessoryID = formData.accessory;
-    const cubeID = req.params.id;
+    const cubeID = req.params.cubeID;
 
     Cube.findByIdAndUpdate(cubeID, { $push: { accessories: accessoryID }}, function (error) {
         if (error) {
@@ -66,7 +66,24 @@ function attachAccessory (req, formData, next) {
             next(error)
         }
     })
-} 
+}
+
+function deleteCubeAccessory(req, next) {
+    const accessoryID = req.params.accessoryID;
+    const cubeID = req.params.cubeID;
+
+    Cube.findByIdAndUpdate(cubeID, { $pull: { accessories: accessoryID }}, function (error) {
+        if (error) {
+            next(error)
+        }
+    })
+
+    Accessory.findByIdAndUpdate(accessoryID, { $pull: { cubes: cubeID } }, function (error) {
+        if (error) {
+            next(error)
+        }
+    })
+}
 
 function validateSearch (res, from, to) {
     if ((from && from < 1) || (to && (to < 1 || to < from))) {
@@ -99,6 +116,7 @@ module.exports = {
     getAccessories,
     addAccessory,
     attachAccessory,
+    deleteCubeAccessory,
     validateSearch,
     searchCubes
 }

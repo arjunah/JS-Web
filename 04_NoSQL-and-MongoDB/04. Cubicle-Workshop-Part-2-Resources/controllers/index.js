@@ -6,6 +6,7 @@ const detailsController = require("../controllers/details");
 const searchController = require("../controllers/search"); 
 const addAccessoryController = require("../controllers/add-accessory");
 const attachAccessoryController = require("../controllers/attach-accessory");
+const deleteCubeAccessoryController = require("../controllers/delete-cube-accessory");
 
 module.exports = {
     homeController, 
@@ -15,5 +16,6 @@ module.exports = {
     detailsController, 
     searchController, 
     addAccessoryController,
-    attachAccessoryController
+    attachAccessoryController,
+    deleteCubeAccessoryController
 }

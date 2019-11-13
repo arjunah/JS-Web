@@ -3,6 +3,7 @@ const { getCubeDetails, getAccessories, attachAccessory } = require("../config/h
 module.exports = async function (req, res, next) {
 
     const method = req.method;
+    const cubeID = req.params.cubeID;
 
     switch (method) {
         case "GET":
@@ -10,8 +11,8 @@ module.exports = async function (req, res, next) {
             let accessories;
 
             try {
-                cube = await getCubeDetails(req.params.id);
-                accessories = await getAccessories(req.params.id, next);
+                cube = await getCubeDetails(cubeID);
+                accessories = await getAccessories(cubeID, next);
             } catch (error) {
                 next(error);
             }
@@ -22,7 +23,7 @@ module.exports = async function (req, res, next) {
         case "POST":
             const formData = req.body;
             attachAccessory(req, formData, next);
-            res.redirect("/details/" + req.params.id);
+            res.redirect("/details/" + cubeID);
             break;
     }
 }

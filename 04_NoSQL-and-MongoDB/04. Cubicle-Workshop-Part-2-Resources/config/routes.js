@@ -6,7 +6,8 @@ const {
     detailsController, 
     searchController, 
     addAccessoryController,
-    attachAccessoryController } = require("../controllers/index"); 
+    attachAccessoryController,
+    deleteCubeAccessoryController } = require("../controllers/index"); 
 
 module.exports = (app) => {
     app.get("/", homeController);
@@ -21,10 +22,12 @@ module.exports = (app) => {
     app.get("/add-accessory", addAccessoryController);
     app.post("/add-accessory", addAccessoryController);
 
-    app.get("/details/:id", detailsController);
+    app.get("/details/:cubeID", detailsController);
 
-    app.get("/attach-accessory/:id", attachAccessoryController);
-    app.post("/attach-accessory/:id", attachAccessoryController);
+    app.get("/attach-accessory/:cubeID", attachAccessoryController);
+    app.post("/attach-accessory/:cubeID", attachAccessoryController);
+
+    app.get("/delete-cube-accessory/:accessoryID&:cubeID", deleteCubeAccessoryController);
 
     app.get("*", notFoundController); // handles all other routes with 404; should be last
 };
