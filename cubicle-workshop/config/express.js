@@ -9,7 +9,7 @@ module.exports = (app) => {
 
     app.use("/static", express.static(path.join(__dirname, "../static"))); // serve static files
 
-    app.engine(".hbs", handlebars({ extname: ".hbs"}));
+    app.engine(".hbs", handlebars({ extname: ".hbs", helpers: require("./helpers") }));
     app.set("view engine", ".hbs");
     // app.locals.layout = false; // disable layouts
 };

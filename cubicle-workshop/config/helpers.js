@@ -109,6 +109,10 @@ function searchCubes (search, from, to, allCubes) {
     });
 }
 
+function selectDifficultyOption (cubeDifficulty, optionValue, options) {
+    return cubeDifficulty === optionValue ? options.fn(this) : options.inverse(this);
+}
+
 module.exports = {
     getCubes,
     getCubeDetails,
@@ -118,5 +122,6 @@ module.exports = {
     attachAccessory,
     deleteCubeAccessory,
     validateSearch,
-    searchCubes
+    searchCubes,
+    selectDifficultyOption
 }

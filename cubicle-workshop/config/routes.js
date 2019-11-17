@@ -1,16 +1,28 @@
-const { 
-    homeController, 
-    aboutController, 
-    notFoundController, 
-    createController, 
-    detailsController, 
-    searchController, 
+const {
+    homeController,
+    aboutController,
+    notFoundController,
+    createController,
+    detailsController,
+    searchController,
     addAccessoryController,
     attachAccessoryController,
-    deleteCubeAccessoryController } = require("../controllers/index"); 
+    deleteCubeAccessoryController,
+    loginController,
+    logoutController,
+    registerController,
+    editCubeController,
+    deleteCubeController
+} = require("../controllers/index");
 
 module.exports = (app) => {
     app.get("/", homeController);
+
+    app.get("/login", loginController);
+
+    app.get("/logout", logoutController);
+
+    app.get("/register", registerController);
 
     app.get("/about", aboutController);
 
@@ -23,6 +35,10 @@ module.exports = (app) => {
     app.post("/add-accessory", addAccessoryController);
 
     app.get("/details/:cubeID", detailsController);
+
+    app.get("/edit/:cubeID", editCubeController);
+
+    app.get("/delete/:cubeID", deleteCubeController);
 
     app.get("/attach-accessory/:cubeID", attachAccessoryController);
     app.post("/attach-accessory/:cubeID", attachAccessoryController);

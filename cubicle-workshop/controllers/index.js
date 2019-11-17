@@ -1,12 +1,17 @@
-const homeController = require("../controllers/home");
-const aboutController = require("../controllers/about");
-const notFoundController = require("../controllers/not-found");
-const createController = require("../controllers/create");
-const detailsController = require("../controllers/details");
-const searchController = require("../controllers/search"); 
-const addAccessoryController = require("../controllers/add-accessory");
-const attachAccessoryController = require("../controllers/attach-accessory");
-const deleteCubeAccessoryController = require("../controllers/delete-cube-accessory");
+const homeController = require("./home");
+const aboutController = require("./about");
+const notFoundController = require("./not-found");
+const createController = require("./create");
+const detailsController = require("./details");
+const searchController = require("./search"); 
+const addAccessoryController = require("./add-accessory");
+const attachAccessoryController = require("./attach-accessory");
+const deleteCubeAccessoryController = require("./delete-cube-accessory");
+const loginController = require("./login");
+const logoutController = require("./logout");
+const registerController = require("./register");
+const editCubeController = require("./edit-cube");
+const deleteCubeController = require("./delete-cube");
 
 module.exports = {
     homeController, 
@@ -17,5 +22,10 @@ module.exports = {
     searchController, 
     addAccessoryController,
     attachAccessoryController,
-    deleteCubeAccessoryController
+    deleteCubeAccessoryController,
+    loginController,
+    logoutController,
+    registerController,
+    editCubeController,
+    deleteCubeController
 }

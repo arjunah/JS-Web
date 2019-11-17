@@ -27,7 +27,11 @@ const cubeSchema = new Schema(
                 type: Schema.Types.ObjectId,
                 ref: "Accessory"
             }
-        ]
+        ],
+        creatorID: {
+            type: String,
+            required: true
+        }
     });
 
 const accessorySchema = new Schema(
@@ -58,10 +62,24 @@ function validateURLProtocol(url) {
     return (url.startsWith("http://") || url.startsWith("https://")) ? true : false
 }
 
+const userSchema = new Schema(
+    {
+        name: {
+            type: String,
+            required: true
+        },
+        password: {
+            type: String,
+            required: true
+        }
+    });
+
 const Cube = model("Cube", cubeSchema);
-const Accessory = model("Accessory", accessorySchema)
+const Accessory = model("Accessory", accessorySchema);
+const User = model("User", userSchema);
 
 module.exports = {
     Cube,
-    Accessory
+    Accessory,
+    User
 }
