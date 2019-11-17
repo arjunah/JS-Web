@@ -1,3 +1,3 @@
-module.exports = function notFoundController (req, res, next) {
+module.exports = function notFound (req, res, next) {
     res.render("404");
 } 

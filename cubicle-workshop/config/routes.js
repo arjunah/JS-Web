@@ -1,49 +1,43 @@
 const {
-    homeController,
-    aboutController,
-    notFoundController,
-    createController,
-    detailsController,
-    searchController,
-    addAccessoryController,
-    attachAccessoryController,
-    deleteCubeAccessoryController,
-    loginController,
-    logoutController,
-    registerController,
-    editCubeController,
-    deleteCubeController
-} = require("../controllers/index");
+    home, 
+    about, 
+    notFound, 
+    search,
+    auth,
+    cube,
+    accessory
+} = require("../controllers");
 
 module.exports = (app) => {
-    app.get("/", homeController);
+    app.get("/", home);
 
-    app.get("/login", loginController);
+    app.get("/login", auth.login);
 
-    app.get("/logout", logoutController);
+    app.get("/logout", auth.logout);
 
-    app.get("/register", registerController);
+    app.get("/register", auth.register);
+    app.post("/register", auth.register);
 
-    app.get("/about", aboutController);
+    app.get("/about", about);
 
-    app.get("/create", createController);
-    app.post("/create", createController);
+    app.get("/create", cube.createCube);
+    app.post("/create", cube.createCube);
 
-    app.post("/search", searchController);
+    app.post("/search", search);
 
-    app.get("/add-accessory", addAccessoryController);
-    app.post("/add-accessory", addAccessoryController);
+    app.get("/add-accessory", accessory.addAccessory);
+    app.post("/add-accessory", accessory.addAccessory);
 
-    app.get("/details/:cubeID", detailsController);
+    app.get("/details/:cubeID", cube.cubeDetails);
 
-    app.get("/edit/:cubeID", editCubeController);
+    app.get("/edit/:cubeID", cube.editCube);
 
-    app.get("/delete/:cubeID", deleteCubeController);
+    app.get("/delete/:cubeID", cube.deleteCube);
 
-    app.get("/attach-accessory/:cubeID", attachAccessoryController);
-    app.post("/attach-accessory/:cubeID", attachAccessoryController);
+    app.get("/attach-accessory/:cubeID", accessory.attachAccessory);
+    app.post("/attach-accessory/:cubeID", accessory.attachAccessory);
 
-    app.get("/delete-cube-accessory/:accessoryID&:cubeID", deleteCubeAccessoryController);
+    app.get("/delete-cube-accessory/:accessoryID&:cubeID", accessory.deleteAccessory);
 
-    app.get("*", notFoundController); // handles all other routes with 404; should be last
+    app.get("*", notFound); // handles all other routes with 404; should be last
 };

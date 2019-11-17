@@ -1,4 +1,19 @@
-const { Cube, Accessory } = require("../models/models");
+const { Cube, Accessory, User } = require("../models");
+
+function registerUser (username, password, repeatPassword, next) {
+    if (password !== repeatPassword) {
+        res.render("register");
+        return;
+    }
+
+    const newUser = new User({ username, password });
+
+    newUser.save(function (error) {
+        if (error) {
+            next(error);
+        }
+    });
+}
 
 function getCubes () {
     return  Cube.find();
@@ -35,7 +50,7 @@ async function getAccessories (cubeID, next) {
     return accessories;
 }
 
-function addAccessory (formData, next) {
+function addCubeAccessory (formData, next) {
     const newAccessory = new Accessory(
         {
             name: formData.name,
@@ -51,7 +66,7 @@ function addAccessory (formData, next) {
     })
 }
 
-function attachAccessory (req, formData, next) {
+function attachCubeAccessory (req, formData, next) {
     const accessoryID = formData.accessory;
     const cubeID = req.params.cubeID;
 
@@ -114,12 +129,13 @@ function selectDifficultyOption (cubeDifficulty, optionValue, options) {
 }
 
 module.exports = {
+    registerUser,
     getCubes,
     getCubeDetails,
     addCube,
     getAccessories,
-    addAccessory,
-    attachAccessory,
+    addCubeAccessory,
+    attachCubeAccessory,
     deleteCubeAccessory,
     validateSearch,
     searchCubes,

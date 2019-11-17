@@ -1,3 +1,3 @@
-module.exports = function aboutController (req, res, next) {
+module.exports = function about (req, res, next) {
     res.render("about");
 }

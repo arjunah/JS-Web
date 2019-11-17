@@ -1,6 +1,6 @@
 const { getCubes } = require("../config/helpers");
 
-module.exports = async function homeController (req, res, next) {
+module.exports = async function home (req, res, next) {
 
     const method = req.method;
     let cubes;

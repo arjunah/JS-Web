@@ -1,6 +1,6 @@
 const { getCubes, validateSearch, searchCubes } = require("../config/helpers");
 
-module.exports = async function (req, res, next) {
+module.exports = async function search (req, res, next) {
     
     const { search, from, to } = req.body;
     const validated = validateSearch(res, from, to);
