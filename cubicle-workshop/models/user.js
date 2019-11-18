@@ -15,6 +15,12 @@ const userSchema = new Schema(
         }
     });
 
+userSchema.methods = {
+    verifyPassword: function (password) {
+        return bcrypt.compare(password, this.password);
+    }
+}
+
 userSchema.pre("save", function (next) {
     if (this.isModified("password")) {
         bcrypt.hash(this.password, saltRounds, (error, hash) => {

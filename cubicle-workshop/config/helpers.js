@@ -15,6 +15,21 @@ function registerUser (username, password, repeatPassword, next) {
     });
 }
 
+function checkIfUserExists (username) {
+    return User.findOne({ username });
+}
+
+function loginUser (user, password) {
+    user.verifyPassword(password)
+        .then(verified => {
+            if (!verified) {
+                res.render("login");
+                return;
+            }
+        });
+    return Promise.resolve(user);
+}
+
 function getCubes () {
     return  Cube.find();
 }
@@ -130,6 +145,8 @@ function selectDifficultyOption (cubeDifficulty, optionValue, options) {
 
 module.exports = {
     registerUser,
+    checkIfUserExists,
+    loginUser,
     getCubes,
     getCubeDetails,
     addCube,

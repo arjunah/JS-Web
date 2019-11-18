@@ -12,6 +12,7 @@ module.exports = (app) => {
     app.get("/", home);
 
     app.get("/login", auth.login);
+    app.post("/login", auth.login);
 
     app.get("/logout", auth.logout);
 

@@ -1,11 +1,14 @@
 const express = require("express");
 const handlebars = require("express-handlebars");
-const bodyParser = require("body-parser");
 const path = require("path");
+const cookieParser = require("cookie-parser");
+const secret = require("./app-config").cookieSecret;
 
 module.exports = (app) => {
 
-    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(express.urlencoded({ extended: true }));
+
+    app.use(cookieParser(secret));
 
     app.use("/static", express.static(path.join(__dirname, "../static"))); // serve static files
 
