@@ -38,17 +38,11 @@ async function login (req, res, next) {
                 next(error);
             }
             loginUser(user, password)
-            .then(user => {
-                let token;
-                jwt.createToken({ userID: user._id })
-                    .then(token => {
-                        token = token;
-                    })
-                    .catch(error => {
-                        next(error);
-                        return;
-                    });
+            .then(async (user) => {
+                const token = await jwt.createToken({ userID: user._id });
                 res.cookie(authCookieName, token).redirect("/");
+            }).catch(error => {
+                next(error);
             }); 
             break;
     }
