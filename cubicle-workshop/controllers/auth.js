@@ -39,7 +39,7 @@ async function login (req, res, next) {
             }
             loginUser(user, password)
             .then(async (user) => {
-                const token = await jwt.createToken({ userID: user._id });
+                const token = await jwt.createToken({ userID: user._id, username });
                 res.cookie(authCookieName, token).redirect("/");
             }).catch(error => {
                 next(error);

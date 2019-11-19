@@ -8,6 +8,8 @@ const {
     accessory
 } = require("../controllers");
 
+const authorize = require("./authorize");
+
 module.exports = (app) => {
     app.get("/", home);
 
@@ -21,24 +23,24 @@ module.exports = (app) => {
 
     app.get("/about", about);
 
-    app.get("/create", cube.createCube);
-    app.post("/create", cube.createCube);
+    app.get("/create", authorize, cube.createCube);
+    app.post("/create", authorize, cube.createCube);
 
     app.post("/search", search);
 
-    app.get("/add-accessory", accessory.addAccessory);
-    app.post("/add-accessory", accessory.addAccessory);
+    app.get("/add-accessory", authorize, accessory.addAccessory);
+    app.post("/add-accessory", authorize, accessory.addAccessory);
 
-    app.get("/details/:cubeID", cube.cubeDetails);
+    app.get("/details/:cubeID", authorize, cube.cubeDetails);
 
-    app.get("/edit/:cubeID", cube.editCube);
+    app.get("/edit/:cubeID", authorize, cube.editCube);
 
-    app.get("/delete/:cubeID", cube.deleteCube);
+    app.get("/delete/:cubeID", authorize, cube.deleteCube);
 
-    app.get("/attach-accessory/:cubeID", accessory.attachAccessory);
-    app.post("/attach-accessory/:cubeID", accessory.attachAccessory);
+    app.get("/attach-accessory/:cubeID", authorize, accessory.attachAccessory);
+    app.post("/attach-accessory/:cubeID", authorize, accessory.attachAccessory);
 
-    app.get("/delete-cube-accessory/:accessoryID&:cubeID", accessory.deleteAccessory);
+    app.get("/delete-cube-accessory/:accessoryID&:cubeID", authorize, accessory.deleteAccessory);
 
     app.get("*", notFound); // handles all other routes with 404; should be last
 };

@@ -16,7 +16,7 @@ const jwt = {
         },
     verifyToken: function (token) {
         return new Promise ((resolve, reject) => {
-            jsonWebToken.verify(token, secret, { expiresIn: "10m" }, function (error, data) {
+            jsonWebToken.verify(token, secret, function (error, data) {
                 if (error) {
                     reject(error);
                     return;
