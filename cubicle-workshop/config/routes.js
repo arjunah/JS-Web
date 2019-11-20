@@ -11,25 +11,25 @@ const {
 const authorize = require("./authorize");
 
 module.exports = (app) => {
-    app.get("/", home);
+    app.get("/", authorize, home);
 
-    app.get("/login", auth.login);
+    app.get("/login", authorize, auth.login);
     app.post("/login", auth.login);
 
-    app.get("/logout", auth.logout);
+    app.get("/logout", authorize, auth.logout);
 
-    app.get("/register", auth.register);
+    app.get("/register", authorize, auth.register);
     app.post("/register", auth.register);
 
-    app.get("/about", about);
+    app.get("/about", authorize, about);
 
     app.get("/create", authorize, cube.createCube);
-    app.post("/create", authorize, cube.createCube);
+    app.post("/create", cube.createCube);
 
     app.post("/search", search);
 
     app.get("/add-accessory", authorize, accessory.addAccessory);
-    app.post("/add-accessory", authorize, accessory.addAccessory);
+    app.post("/add-accessory", accessory.addAccessory);
 
     app.get("/details/:cubeID", authorize, cube.cubeDetails);
 
@@ -38,7 +38,7 @@ module.exports = (app) => {
     app.get("/delete/:cubeID", authorize, cube.deleteCube);
 
     app.get("/attach-accessory/:cubeID", authorize, accessory.attachAccessory);
-    app.post("/attach-accessory/:cubeID", authorize, accessory.attachAccessory);
+    app.post("/attach-accessory/:cubeID", accessory.attachAccessory);
 
     app.get("/delete-cube-accessory/:accessoryID&:cubeID", authorize, accessory.deleteAccessory);
 

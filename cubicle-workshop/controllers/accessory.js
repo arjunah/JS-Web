@@ -12,7 +12,7 @@ function addAccessory (req, res, next) {
 
     switch (method) {
         case "GET":
-            res.render("add-accessory");
+            res.render("add-accessory", { user: req.user });
             break;
         
         case "POST":
@@ -40,7 +40,7 @@ async function attachAccessory (req, res, next) {
                 next(error);
             }
 
-            res.render("attach-accessory", { cube, accessories });
+            res.render("attach-accessory", { cube, accessories, user: req.user });
             break;
 
         case "POST":

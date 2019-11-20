@@ -12,7 +12,7 @@ module.exports = async function home (req, res, next) {
 
     switch (method) {
         case "GET":
-            res.render("index", { cubes });
+            res.render("index", { cubes, user: req.user });
             break;
     }
 } 

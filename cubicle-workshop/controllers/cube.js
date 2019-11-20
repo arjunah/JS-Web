@@ -6,7 +6,7 @@ function createCube (req, res, next) {
 
     switch (method) {
         case "GET":
-            res.render("create");
+            res.render("create", { user: req.user });
             break;
         case "POST":
             const formData = req.body;
@@ -28,7 +28,7 @@ async function deleteCube (req, res, next) {
             } catch (error) {
                 next(error);
             }
-            res.render("delete-cube", { cube });
+            res.render("delete-cube", { cube, user: req.user });
             break;
     }
 }
@@ -42,7 +42,7 @@ async function cubeDetails (req, res, next) {
         next(error);
     }
 
-    res.render("details", { cube });
+    res.render("details", { cube, user: req.user });
 }
 
 async function editCube (req, res, next) {
@@ -57,7 +57,7 @@ async function editCube (req, res, next) {
             } catch (error) {
                 next(error);
             }
-            res.render("edit-cube", { cube });
+            res.render("edit-cube", { cube, user: req.user });
             break;
     }
 }
