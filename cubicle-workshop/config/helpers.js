@@ -1,4 +1,4 @@
-const { Cube, Accessory, User } = require("../models");
+const { Cube, Accessory, User, BlacklistToken } = require("../models");
 
 function registerUser (username, password, repeatPassword, next) {
     if (password !== repeatPassword) {
@@ -115,6 +115,16 @@ function deleteCubeAccessory(req, next) {
     })
 }
 
+function blacklistToken (token, next) {
+    const tokenToBlacklist = new BlacklistToken({ token });
+
+    tokenToBlacklist.save(function (error) {
+        if (error) {
+            next(error);
+        }
+    });
+}
+
 function validateSearch (res, from, to) {
     if ((from && from < 1) || (to && (to < 1 || to < from))) {
         res.redirect("/");
@@ -154,6 +164,7 @@ module.exports = {
     addCubeAccessory,
     attachCubeAccessory,
     deleteCubeAccessory,
+    blacklistToken,
     validateSearch,
     searchCubes,
     selectDifficultyOption

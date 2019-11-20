@@ -1,4 +1,4 @@
-const { registerUser, checkIfUserExists, loginUser } = require("../config/helpers");
+const { registerUser, checkIfUserExists, loginUser, blacklistToken } = require("../config/helpers");
 const { jwt } = require("../config/utils");
 const { authCookieName } = require("../config/app-config");
 
@@ -40,7 +40,7 @@ async function login (req, res, next) {
             loginUser(user, password)
             .then(async (user) => {
                 const token = await jwt.createToken({ userID: user._id, username });
-                res.cookie(authCookieName, token).redirect("/");
+                res.cookie(authCookieName, token, { httpOnly: true }).redirect("/");
             }).catch(error => {
                 next(error);
             }); 
@@ -49,6 +49,9 @@ async function login (req, res, next) {
 }
 
 function logout (req, res, next) {
+    const token = req.cookies[authCookieName];
+    blacklistToken(token, next);
+    res.clearCookie(authCookieName);
     res.redirect("/");
 }
 

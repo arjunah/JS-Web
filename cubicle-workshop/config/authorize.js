@@ -18,6 +18,7 @@ function authorize (req, res, next) {
             }
         }).catch(error => {
             if (error.name === "TokenExpiredError") {
+                res.clearCookie(authCookieName);
                 res.redirect("/login");
                 return;
             } else {
