@@ -1,4 +1,4 @@
-const { addCube, getCubeDetails, updateCube } = require("../config/helpers");
+const { addCube, getCubeDetails, updateCube, removeCube } = require("../config/helpers");
 
 function createCube (req, res, next) {
     const method = req.method;
@@ -18,11 +18,11 @@ function createCube (req, res, next) {
 
 async function deleteCube (req, res, next) {
     const method = req.method;
+    const cubeID = req.params.cubeID;
     const user = req.user;
 
     switch (method) {
         case "GET":
-            const cubeID = req.params.cubeID;
             let cube;
             try {
                 cube = await getCubeDetails(cubeID);
@@ -31,6 +31,9 @@ async function deleteCube (req, res, next) {
             }
             res.render("delete-cube", { user, cube });
             break;
+        case "POST":
+            removeCube(cubeID, next);
+            res.redirect("/");
     }
 }
 

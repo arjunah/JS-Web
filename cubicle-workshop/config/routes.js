@@ -37,6 +37,7 @@ module.exports = (app) => {
     app.post("/edit/:cubeID", authorize, cube.editCube);
 
     app.get("/delete/:cubeID", authorize, cube.deleteCube);
+    app.post("/delete/:cubeID", authorize, cube.deleteCube);
 
     app.get("/attach-accessory/:cubeID", authorize, accessory.attachAccessory);
     app.post("/attach-accessory/:cubeID", authorize, accessory.attachAccessory);

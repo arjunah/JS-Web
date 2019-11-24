@@ -64,6 +64,14 @@ function updateCube (cubeID, formData, next) {
     });
 }
 
+function removeCube(cubeID, next) {
+    Cube.findByIdAndDelete(cubeID, function (error) {
+        if (error) {
+            next(error);
+        }
+    });
+}
+
 async function getAccessories (cubeID, next) {
     let accessories;
     try {               // filter out the accessories attached to a cube
@@ -170,6 +178,7 @@ module.exports = {
     getCubeDetails,
     addCube,
     updateCube,
+    removeCube,
     getAccessories,
     addCubeAccessory,
     attachCubeAccessory,
