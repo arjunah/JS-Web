@@ -1,8 +1,9 @@
 const { getCubes } = require("../config/helpers");
 
 module.exports = async function home (req, res, next) {
-
     const method = req.method;
+    const user = req.user;
+
     let cubes;
     try {
         cubes = await getCubes();
@@ -12,7 +13,7 @@ module.exports = async function home (req, res, next) {
 
     switch (method) {
         case "GET":
-            res.render("index", { cubes, user: req.user });
+            res.render("index", { user, cubes });
             break;
     }
 } 

@@ -1,3 +1,4 @@
 module.exports = function about (req, res, next) {
-    res.render("about", { user: req.user });
+    const user = req.user;
+    res.render("about", { user });
 }

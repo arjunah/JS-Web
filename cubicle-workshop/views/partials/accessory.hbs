@@ -2,5 +2,7 @@
     <img src={{this.imageURL}} alt={{this.name}}>
     <h3>{{this.name}}</h3>
     <p>{{this.description}}</p>
+    {{#if @root.creator}}
     <a class="btn" href="/delete-cube-accessory/{{this._id}}&{{@root.cube._id}}">Delete</a>
+    {{/if}}
 </div>

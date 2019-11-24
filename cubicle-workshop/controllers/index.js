@@ -2,7 +2,7 @@ const home = require("./home");
 const about = require("./about");
 const notFound = require("./not-found");
 const search = require("./search"); 
-const auth = require("./auth");
+const user = require("./user");
 const cube = require("./cube");
 const accessory = require("./accessory");
 
@@ -11,7 +11,7 @@ module.exports = {
     about, 
     notFound, 
     search,
-    auth,
+    user,
     cube,
     accessory
 }

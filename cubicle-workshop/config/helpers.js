@@ -38,13 +38,14 @@ function getCubeDetails (cubeID) {
     return Cube.findById(cubeID).populate("accessories");
 }
 
-function addCube (formData, next) {
+function addCube (user, formData, next) {
      const newCube = new Cube(
          {
            name: formData.name,
            description: formData.description,
            imageURL: formData.imageURL,
-           difficulty: formData.difficulty  
+           difficulty: formData.difficulty,  
+           creatorID: user.username
          }
      );
 
@@ -53,6 +54,14 @@ function addCube (formData, next) {
              next(error);
          }
      });
+}
+
+function updateCube (cubeID, formData, next) {
+    Cube.findByIdAndUpdate(cubeID, { ...formData }, function (error) {
+        if (error) {
+            next(error);
+        }
+    });
 }
 
 async function getAccessories (cubeID, next) {
@@ -78,7 +87,7 @@ function addCubeAccessory (formData, next) {
         if (error) {
             next(error);
         }
-    })
+    });
 }
 
 function attachCubeAccessory (req, formData, next) {
@@ -89,13 +98,13 @@ function attachCubeAccessory (req, formData, next) {
         if (error) {
             next(error)
         }
-    })
+    });
 
     Accessory.findByIdAndUpdate(accessoryID, { $push: { cubes: cubeID } }, function (error) {
         if (error) {
             next(error)
         }
-    })
+    });
 }
 
 function deleteCubeAccessory(req, next) {
@@ -106,13 +115,13 @@ function deleteCubeAccessory(req, next) {
         if (error) {
             next(error)
         }
-    })
+    });
 
     Accessory.findByIdAndUpdate(accessoryID, { $pull: { cubes: cubeID } }, function (error) {
         if (error) {
             next(error)
         }
-    })
+    });
 }
 
 function blacklistToken (token, next) {
@@ -160,6 +169,7 @@ module.exports = {
     getCubes,
     getCubeDetails,
     addCube,
+    updateCube,
     getAccessories,
     addCubeAccessory,
     attachCubeAccessory,

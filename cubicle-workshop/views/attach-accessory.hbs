@@ -10,7 +10,9 @@
             <option value="{{this._id}}">{{this.name}}</option>
             {{/each}}    
         </select>
+        {{#if creator}}
         <input type="submit" value="Attach">
+        {{/if}}
     </form>
     {{else}}
     <h3 class="italic">This cube already has all available accessories or there are no added accessories yet.</h3>

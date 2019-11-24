@@ -9,10 +9,11 @@ const {
 function addAccessory (req, res, next) {
 
     const method = req.method;
+    const user = req.user;
 
     switch (method) {
         case "GET":
-            res.render("add-accessory", { user: req.user });
+            res.render("add-accessory", { user });
             break;
         
         case "POST":
@@ -27,6 +28,7 @@ async function attachAccessory (req, res, next) {
 
     const method = req.method;
     const cubeID = req.params.cubeID;
+    const user = req.user;
 
     switch (method) {
         case "GET":
@@ -40,7 +42,8 @@ async function attachAccessory (req, res, next) {
                 next(error);
             }
 
-            res.render("attach-accessory", { cube, accessories, user: req.user });
+            const creator = cube.creatorID === req.user.username ? true : false;
+            res.render("attach-accessory", { user, cube, accessories, creator });
             break;
 
         case "POST":

@@ -1,16 +1,16 @@
-const { addCube, getCubeDetails } = require("../config/helpers");
+const { addCube, getCubeDetails, updateCube } = require("../config/helpers");
 
 function createCube (req, res, next) {
-
     const method = req.method;
+    const user = req.user;
 
     switch (method) {
         case "GET":
-            res.render("create", { user: req.user });
+            res.render("create", { user });
             break;
         case "POST":
             const formData = req.body;
-            addCube(formData, next);
+            addCube(user, formData, next);
             res.redirect("/");
             break;
     }
@@ -18,6 +18,7 @@ function createCube (req, res, next) {
 
 async function deleteCube (req, res, next) {
     const method = req.method;
+    const user = req.user;
 
     switch (method) {
         case "GET":
@@ -28,36 +29,43 @@ async function deleteCube (req, res, next) {
             } catch (error) {
                 next(error);
             }
-            res.render("delete-cube", { cube, user: req.user });
+            res.render("delete-cube", { user, cube });
             break;
     }
 }
 
 async function cubeDetails (req, res, next) {
     const cubeID = req.params.cubeID;
+    const user = req.user;
     let cube;
     try {
         cube = await getCubeDetails(cubeID);
     } catch (error) {
         next(error);
     }
-
-    res.render("details", { cube, user: req.user });
+    const creator = cube.creatorID === req.user.username ? true : false;
+    res.render("details", { user, cube, creator});
 }
 
 async function editCube (req, res, next) {
     const method = req.method;
+    const user = req.user;
+    const cubeID = req.params.cubeID;
 
     switch (method) {
         case "GET":
-            const cubeID = req.params.cubeID;
             let cube;
             try {
                 cube = await getCubeDetails(cubeID);
             } catch (error) {
                 next(error);
             }
-            res.render("edit-cube", { cube, user: req.user });
+            res.render("edit-cube", { cube, user });
+            break;
+        case "POST":
+            const formData = req.body;
+            updateCube(cubeID, formData, next);
+            res.redirect(`/details/${cubeID}`);
             break;
     }
 }
