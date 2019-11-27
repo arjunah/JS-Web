@@ -1,5 +1,5 @@
 const { model, Schema } = require("mongoose");
-const { validatePassword } = require("./validators");
+const { validatePassword, isUsernameUnique } = require("./validators");
 const bcrypt = require("bcrypt");
 const saltRounds = 9;
 
@@ -8,7 +8,8 @@ const userSchema = new Schema(
         username: {
             type: String,
             required: [true, "Username is required!"],
-            minlength: [2, "The username must be at least two characters!"]
+            minlength: [2, "The username must be at least two characters!"],
+            validate: [isUsernameUnique ,"This username has already been taken!"]
         },
         password: {
             type: String,
@@ -38,5 +39,10 @@ userSchema.pre("save", function (next) {
 });
 
 const User = model("User", userSchema);
+
+// User.schema.path("username").validate(function (username) {
+//     const user = User.findOne({ username });
+//     return user ? false : true;
+// }, "This username has already been taken!")
 
 module.exports = User;

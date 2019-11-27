@@ -7,11 +7,13 @@ function registerUser (username, password, repeatPassword, next) {
     }
 
     const newUser = new User({ username, password });
-
-    newUser.save(function (error) {
-        if (error) {
-            next(error);
-        }
+    
+    User.init().then(() => {
+        newUser.save(function (error) {
+            if (error) {
+                next(error);
+            }
+        });
     });
 }
 
