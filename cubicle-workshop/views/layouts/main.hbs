@@ -20,6 +20,11 @@
         {{/if}}
       </ul>
     </header>
+    {{#if errors}}
+    <div id="notifications">
+        <p id="notification-message">{{errors}}</p>
+    </div>
+    {{/if}}
     <main>
       {{{body}}}
     </main>

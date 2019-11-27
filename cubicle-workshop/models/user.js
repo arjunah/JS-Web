@@ -1,4 +1,5 @@
 const { model, Schema } = require("mongoose");
+const { validatePassword } = require("./validators");
 const bcrypt = require("bcrypt");
 const saltRounds = 9;
 
@@ -6,12 +7,13 @@ const userSchema = new Schema(
     {
         username: {
             type: String,
-            required: true,
-            unique: true
+            required: [true, "Username is required!"],
+            minlength: [2, "The username must be at least two characters!"]
         },
         password: {
             type: String,
-            required: true
+            required: [true, "Password is required!"],
+            validate: [validatePassword, "Password must be at least 8 characters and must contain minimum 1 number!"]
         }
     });
 
