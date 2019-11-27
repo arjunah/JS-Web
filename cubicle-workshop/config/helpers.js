@@ -8,12 +8,10 @@ function registerUser (username, password, repeatPassword, next) {
 
     const newUser = new User({ username, password });
     
-    User.init().then(() => {
-        newUser.save(function (error) {
-            if (error) {
-                next(error);
-            }
-        });
+    newUser.save(function (error) {
+        if (error) {
+            next(error);
+        }
     });
 }
 

@@ -9,7 +9,7 @@ const userSchema = new Schema(
             type: String,
             required: [true, "Username is required!"],
             minlength: [2, "The username must be at least two characters!"],
-            validate: [isUsernameUnique ,"This username has already been taken!"]
+            validate: [isUsernameUnique, "This username has already been taken!"]
         },
         password: {
             type: String,

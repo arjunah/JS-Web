@@ -6,10 +6,17 @@ function validatePassword (password) {
     return /^(?=.*\d)([a-zA-Z0-9]){8,}$/.test(password);
 }
 
-function isUsernameUnique (username) {
-    const user = this.constructor.findOne({ username });
+async function isUsernameUnique (username) {
+    let user;
+    try {
+        user = await this.constructor.findOne({ username });
+    } catch (error) {
+        if (error) {
+            throw new Error (error);
+        }
+    }
     return user ? false : true;
-}
+ }
 
 module.exports = {
     validateURLProtocol,
