@@ -2,7 +2,7 @@ const cookieSecret = "Sup3rDup3rS3cr3t";
 const jwtSecret = "secret";
 const authCookieName = "auth-cookie";
 const publicURLs = ["/", "/login", "/logout", "/register", "/about", "/search"];
-const dbName = "cubes";
+const dbName = "CubesDB";
 
 const env = process.env.NODE_ENV || "development";
 

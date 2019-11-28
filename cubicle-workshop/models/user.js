@@ -40,9 +40,4 @@ userSchema.pre("save", function (next) {
 
 const User = model("User", userSchema);
 
-// User.schema.path("username").validate(function (username) {
-//     const user = User.findOne({ username });
-//     return user ? false : true;
-// }, "This username has already been taken!")
-
 module.exports = User;

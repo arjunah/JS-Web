@@ -1,8 +1,17 @@
 const { Cube, Accessory, User, BlacklistToken } = require("../models");
 
-function registerUser (username, password, repeatPassword, next) {
+function clientErrorHandler (res, route, errors) {
+    res.render(route, { errors });
+}
+
+function registerUser (username, password, repeatPassword, res, next) {
     if (password !== repeatPassword) {
-        res.render("register");
+        const repasswordError = {
+            repassword: {
+                message: "Password and Repeat Password must be the same!"
+            }
+        }
+        clientErrorHandler(res, "register", repasswordError);
         return;
     }
 
@@ -10,9 +19,14 @@ function registerUser (username, password, repeatPassword, next) {
     
     newUser.save(function (error) {
         if (error) {
-            next(error);
+            clientErrorHandler(res, "register", error.errors);
+            return;
+        } else {
+            res.redirect("/login");
         }
     });
+
+    
 }
 
 function checkIfUserExists (username) {

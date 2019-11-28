@@ -22,7 +22,9 @@
     </header>
     {{#if errors}}
     <div id="notifications">
-        <p id="notification-message">{{errors}}</p>
+        {{#each errors}}
+        <p id="notification-message">{{this.message}}</p>
+        {{/each}}
     </div>
     {{/if}}
     <main>

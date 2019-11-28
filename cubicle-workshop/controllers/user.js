@@ -13,8 +13,7 @@ function register (req, res, next) {
 
         case "POST":
             const { username, password, repeatPassword } = req.body;
-            registerUser(username, password, repeatPassword, next);
-            res.redirect("/login");
+            registerUser(username, password, repeatPassword, res, next);
             break;
     }
 
