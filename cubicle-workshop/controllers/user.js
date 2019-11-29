@@ -1,4 +1,4 @@
-const { registerUser, checkIfUserExists, loginUser, blacklistToken } = require("../config/helpers");
+const { registerUser, loginUser, blacklistToken } = require("../config/helpers");
 const { jwt } = require("../config/utils");
 const { authCookieName } = require("../config/app-config");
 
@@ -30,13 +30,8 @@ async function login (req, res, next) {
 
         case "POST":
             const { username, password } = req.body;
-            let user;
-            try {
-                user = await checkIfUserExists(username);
-            } catch (error) {
-                next(error);
-            }
-            loginUser(user, password)
+            
+            loginUser(username, password)
             .then(async (user) => {
                 const token = await jwt.createToken({ userID: user._id, username });
                 res.cookie(authCookieName, token, { httpOnly: true }).redirect("/");

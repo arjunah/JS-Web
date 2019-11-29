@@ -4,7 +4,7 @@ function clientErrorHandler (res, route, errors) {
     res.render(route, { errors });
 }
 
-function registerUser (username, password, repeatPassword, res, next) {
+function registerUser (username, password, repeatPassword, res) {
     if (password !== repeatPassword) {
         const repasswordError = {
             repassword: {
@@ -33,7 +33,20 @@ function checkIfUserExists (username) {
     return User.findOne({ username });
 }
 
-function loginUser (user, password) {
+function loginUser (username, password) {
+    let user;
+        try {
+            user = await checkIfUserExists(username);
+        } catch (error) {
+            next(error);
+        }
+    if (!user) {
+        const noSuchUserError = {
+            noSuchUser: {
+                message: "Invalid credentials!"
+            }
+        }
+    }
     user.verifyPassword(password)
         .then(verified => {
             if (!verified) {
