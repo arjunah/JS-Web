@@ -5,6 +5,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const { envConfig, cookieSecret } = require("./config/app-config");
 const app = express();
+const { clientErrorHandler } = require("./config/helpers");
 
 dbConnector().then(() => {
     
@@ -21,4 +22,4 @@ dbConnector().then(() => {
     require("./config/routes")(app);
     
     app.listen(envConfig.port, console.log(`Listening on port ${envConfig.port}...`));
-}).catch(error => console.log(error));
+}).catch(error => clientErrorHandler(res, null, error, { user: req.user }));

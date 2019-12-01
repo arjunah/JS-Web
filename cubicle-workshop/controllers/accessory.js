@@ -3,10 +3,13 @@ const {
     getCubeDetails, 
     getAccessories, 
     attachCubeAccessory, 
-    deleteCubeAccessory 
+    deleteCubeAccessory,
+    setClientCookie,
+    clientErrorHandler 
 } = require("../config/helpers");
+const { cookieNames, clientMessages } = require("../config/app-config");
 
-function addAccessory (req, res, next) {
+function addAccessory (req, res) {
 
     const method = req.method;
     const user = req.user;
@@ -18,8 +21,14 @@ function addAccessory (req, res, next) {
         
         case "POST":
             const formData = req.body;
-            addCubeAccessory(formData, next);
-            res.redirect("/");
+            addCubeAccessory(formData)
+                .then(() => {
+                    setClientCookie(res, cookieNames.message, clientMessages.accessoryAdded, { maxAge: 2000 })
+                        .redirect("/");
+                })
+                .catch(error => {
+                    clientErrorHandler(res, "add-accessory", error, { user });
+                });
             break;
     }  
 }
@@ -42,14 +51,20 @@ async function attachAccessory (req, res, next) {
                 next(error);
             }
 
-            const creator = cube.creatorID === req.user.username ? true : false;
+            const creator = cube.creatorID.equals(req.user._id) ? true : false;
             res.render("attach-accessory", { user, cube, accessories, creator });
             break;
 
         case "POST":
             const formData = req.body;
-            attachCubeAccessory(req, formData, next);
-            res.redirect("/details/" + cubeID);
+            attachCubeAccessory(cubeID, formData)
+                .then(() => {
+                    setClientCookie(res, cookieNames.message, clientMessages.accessoryAttached, { maxAge: 2000 })
+                        .redirect("/details/" + cubeID);
+                })
+                .catch(error => {
+                    clientErrorHandler(res, null, error, { user });
+                });
             break;
     }
 }

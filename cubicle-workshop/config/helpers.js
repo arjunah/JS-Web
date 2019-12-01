@@ -1,152 +1,169 @@
 const { Cube, Accessory, User, BlacklistToken } = require("../models");
 
-function clientErrorHandler (res, route, errors) {
-    res.render(route, { errors });
+// ERROR HANDLER
+function clientErrorHandler(res, route, error, renderVariables) {
+    if (error.name === "ValidationError") {
+        res.render(route, { errors: error.errors, ...renderVariables });
+    } else {
+        res.render("500", { ...renderVariables });
+    }
 }
 
-function registerUser (username, password, repeatPassword, res) {
-    if (password !== repeatPassword) {
-        const repasswordError = {
-            repassword: {
-                message: "Password and Repeat Password must be the same!"
+// USER
+function registerUser(username, password, repeatPassword) {
+    return new Promise((resolve, reject) => {
+        if (password !== repeatPassword) {
+            const repasswordError = {
+                name: "ValidationError",
+                errors: {
+                    repassword: {
+                        message: "Password and Repeat Password must be the same!"
+                    }
+                }
+            }
+            reject(repasswordError);
+        }
+    
+        const newUser = new User({ username, password });
+    
+        newUser.save(function (error) {
+            if (error) {
+                reject(error);
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
+async function loginUser(res, username, password) {
+    let user;
+    try {
+        user = await checkIfUserExists(username);
+    } catch (error) {
+        clientErrorHandler(res, null, error);
+    }
+    if (!user) {
+        const noSuchUserError = {
+            name: "ValidationError",
+            errors: {
+                noSuchUser: {
+                    message: "Invalid credentials!"
+                }
             }
         }
-        clientErrorHandler(res, "register", repasswordError);
-        return;
+        return Promise.reject(noSuchUserError);
     }
-
-    const newUser = new User({ username, password });
-    
-    newUser.save(function (error) {
-        if (error) {
-            clientErrorHandler(res, "register", error.errors);
-            return;
-        } else {
-            res.redirect("/login");
-        }
-    });
-
-    
+    return user.verifyPassword(password)
+        .then(verified => {
+            if (!verified) {
+                const wrongPasswordError = {
+                    name: "ValidationError",
+                    errors: {
+                        wrongPassword: {
+                            message: "Invalid credentials!"
+                        }
+                    }
+                }
+                return Promise.reject(wrongPasswordError);
+            } else {
+                return Promise.resolve(user);
+            }
+        });
 }
 
-function checkIfUserExists (username) {
+function checkIfUserExists(username) {
     return User.findOne({ username });
 }
 
-function loginUser (username, password) {
-    let user;
-        try {
-            user = await checkIfUserExists(username);
-        } catch (error) {
-            next(error);
-        }
-    if (!user) {
-        const noSuchUserError = {
-            noSuchUser: {
-                message: "Invalid credentials!"
-            }
-        }
-    }
-    user.verifyPassword(password)
-        .then(verified => {
-            if (!verified) {
-                res.render("login");
-                return;
-            }
-        });
-    return Promise.resolve(user);
+// CUBES
+function getCubes() {
+    return Cube.find();
 }
 
-function getCubes () {
-    return  Cube.find();
-}
-
-function getCubeDetails (cubeID) {
+function getCubeDetails(cubeID) {
     return Cube.findById(cubeID).populate("accessories");
 }
 
-function addCube (user, formData, next) {
-     const newCube = new Cube(
-         {
-           name: formData.name,
-           description: formData.description,
-           imageURL: formData.imageURL,
-           difficulty: formData.difficulty,  
-           creatorID: user.username
-         }
-     );
-
-     newCube.save(function (error) {
-         if (error) {
-             next(error);
-         }
-     });
-}
-
-function updateCube (cubeID, formData, next) {
-    Cube.findByIdAndUpdate(cubeID, { ...formData }, function (error) {
-        if (error) {
-            next(error);
-        }
+function addCube(user, formData) {
+    return new Promise ((resolve, reject) => {
+        const newCube = new Cube(
+            {
+                name: formData.name,
+                description: formData.description,
+                imageURL: formData.imageURL,
+                difficulty: formData.difficulty,
+                creatorID: user._id
+            }
+        );
+    
+        newCube.save(function (error) {
+            if (error) {
+                reject(error);
+            } else {
+                resolve();
+            }
+        });
     });
 }
 
-function removeCube(cubeID, next) {
-    Cube.findByIdAndDelete(cubeID, function (error) {
-        if (error) {
-            next(error);
-        }
+function updateCube(cubeID, formData) {
+    return Cube.findByIdAndUpdate(cubeID, { ...formData }, { runValidators: true }).exec();
+}
+
+function removeCube(cubeID) {
+    return Cube.findByIdAndDelete(cubeID).exec();
+}
+
+// ACCESSORIES
+async function getAccessories(cubeID) {
+    // filter out the accessories attached to a cube
+    return accessories = await Accessory.find().where("cubes").nin([cubeID]);
+}
+
+function addCubeAccessory(formData) {
+    return new Promise ((resolve, reject) => {
+        const newAccessory = new Accessory(
+            {
+                name: formData.name,
+                description: formData.description,
+                imageURL: formData.imageURL
+            }
+        );
+    
+        newAccessory.save(function (error) {
+            if (error) {
+                reject(error);
+            } else {
+                resolve();
+            }
+        });
     });
 }
 
-async function getAccessories (cubeID, next) {
-    let accessories;
-    try {               // filter out the accessories attached to a cube
-        accessories = await Accessory.find().where("cubes").nin([cubeID]);
-    } catch (error) {
-        next(error)
-    }
-    return accessories;
-}
-
-function addCubeAccessory (formData, next) {
-    const newAccessory = new Accessory(
-        {
-            name: formData.name,
-            description: formData.description,
-            imageURL: formData.imageURL
-        }
-    );
-
-    newAccessory.save(function (error) {
-        if (error) {
-            next(error);
-        }
-    });
-}
-
-function attachCubeAccessory (req, formData, next) {
+function attachCubeAccessory(cubeID, formData) {
     const accessoryID = formData.accessory;
-    const cubeID = req.params.cubeID;
 
-    Cube.findByIdAndUpdate(cubeID, { $push: { accessories: accessoryID }}, function (error) {
-        if (error) {
-            next(error)
-        }
-    });
+    const cubePromise = Cube.findByIdAndUpdate(
+        cubeID, 
+        { $push: { accessories: accessoryID } }, 
+        { runValidators: true })
+        .exec();
 
-    Accessory.findByIdAndUpdate(accessoryID, { $push: { cubes: cubeID } }, function (error) {
-        if (error) {
-            next(error)
-        }
-    });
+    const accessoryPromise = Accessory.findByIdAndUpdate(
+        accessoryID, 
+        { $push: { cubes: cubeID } }, 
+        { runValidators: true })
+        .exec();
+    
+    return Promise.all([cubePromise, accessoryPromise]);
 }
 
 function deleteCubeAccessory(req, next) {
     const accessoryID = req.params.accessoryID;
     const cubeID = req.params.cubeID;
 
-    Cube.findByIdAndUpdate(cubeID, { $pull: { accessories: accessoryID }}, function (error) {
+    Cube.findByIdAndUpdate(cubeID, { $pull: { accessories: accessoryID } }, function (error) {
         if (error) {
             next(error)
         }
@@ -159,7 +176,8 @@ function deleteCubeAccessory(req, next) {
     });
 }
 
-function blacklistToken (token, next) {
+// INVALID TOKENS
+function blacklistToken(token, next) {
     const tokenToBlacklist = new BlacklistToken({ token });
 
     tokenToBlacklist.save(function (error) {
@@ -169,7 +187,8 @@ function blacklistToken (token, next) {
     });
 }
 
-function validateSearch (res, from, to) {
+// SEARCH
+function validateSearch(res, from, to) {
     if ((from && from < 1) || (to && (to < 1 || to < from))) {
         res.redirect("/");
         return false;
@@ -178,7 +197,7 @@ function validateSearch (res, from, to) {
     }
 }
 
-function searchCubes (search, from, to, allCubes) {
+function searchCubes(search, from, to, allCubes) {
     if (from === "") {
         from = 1;
     }
@@ -186,18 +205,27 @@ function searchCubes (search, from, to, allCubes) {
         to = Number.MAX_SAFE_INTEGER;
     }
     return allCubes.filter(cube => {
-        return ((cube.name.toLowerCase().includes(search.toLowerCase()) || 
-                cube.description.toLowerCase().includes(search.toLowerCase())) && 
-                Number(cube.difficulty) >= Number(from) && 
-                Number(cube.difficulty) <= Number(to));
+        return ((cube.name.toLowerCase().includes(search.toLowerCase()) ||
+            cube.description.toLowerCase().includes(search.toLowerCase())) &&
+            Number(cube.difficulty) >= Number(from) &&
+            Number(cube.difficulty) <= Number(to));
     });
 }
 
-function selectDifficultyOption (cubeDifficulty, optionValue, options) {
+// OTHER
+
+// Selects the current cube difficulty from the select menu when editing or deleting a cube
+function selectDifficultyOption(cubeDifficulty, optionValue, options) {
     return cubeDifficulty === optionValue ? options.fn(this) : options.inverse(this);
 }
 
+// Sets client cookies for authentication and notification purposes
+function setClientCookie (res, cookieName, content, options) {
+    return res.cookie(cookieName, content, options);
+}
+
 module.exports = {
+    clientErrorHandler,
     registerUser,
     checkIfUserExists,
     loginUser,
@@ -213,5 +241,6 @@ module.exports = {
     blacklistToken,
     validateSearch,
     searchCubes,
-    selectDifficultyOption
+    selectDifficultyOption,
+    setClientCookie
 }

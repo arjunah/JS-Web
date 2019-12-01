@@ -21,10 +21,15 @@
       </ul>
     </header>
     {{#if errors}}
-    <div id="notifications">
+    <div id="error-notifications">
         {{#each errors}}
         <p id="notification-message">{{this.message}}</p>
         {{/each}}
+    </div>
+    {{/if}}
+    {{#if message}}
+    <div id="success-notifications">
+        <p id="notification-message">{{message}}</p>
     </div>
     {{/if}}
     <main>

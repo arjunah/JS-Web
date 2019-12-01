@@ -1,4 +1,5 @@
 const { getCubes } = require("../config/helpers");
+const { cookieNames } = require("../config/app-config");
 
 module.exports = async function home (req, res, next) {
     const method = req.method;
@@ -13,7 +14,8 @@ module.exports = async function home (req, res, next) {
 
     switch (method) {
         case "GET":
-            res.render("index", { user, cubes });
+            const message = req.cookies[cookieNames.message] || null;
+            res.render("index", { user, cubes, message });
             break;
     }
 } 

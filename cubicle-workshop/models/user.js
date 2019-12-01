@@ -14,7 +14,7 @@ const userSchema = new Schema(
         password: {
             type: String,
             required: [true, "Password is required!"],
-            validate: [validatePassword, "Password must be at least 8 characters and must contain minimum 1 number!"]
+            validate: [validatePassword, "Password must be at least 8 characters and must contain at least 1 number!"]
         }
     });
 
