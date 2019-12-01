@@ -188,16 +188,25 @@ function blacklistToken(token, next) {
 }
 
 // SEARCH
-function validateSearch(res, from, to) {
-    if ((from && from < 1) || (to && (to < 1 || to < from))) {
-        res.redirect("/");
-        return false;
-    } else {
-        return true;
-    }
+function validateSearch(from, to) {
+    return new Promise ((resolve, reject) => {
+        if ((from && from < 1) || (to && (to < 1 || to < from))) {
+            const searchError = {
+                name: "ValidationError",
+                errors: {
+                    search: {
+                        message: "Invalid search input!"
+                    }
+                }
+            }
+            reject(searchError);
+        } else {
+            resolve();
+        }
+    });
 }
 
-function searchCubes(search, from, to, allCubes) {
+function searchCubes(searchString, from, to, allCubes) {
     if (from === "") {
         from = 1;
     }
@@ -205,8 +214,8 @@ function searchCubes(search, from, to, allCubes) {
         to = Number.MAX_SAFE_INTEGER;
     }
     return allCubes.filter(cube => {
-        return ((cube.name.toLowerCase().includes(search.toLowerCase()) ||
-            cube.description.toLowerCase().includes(search.toLowerCase())) &&
+        return ((cube.name.toLowerCase().includes(searchString.toLowerCase()) ||
+            cube.description.toLowerCase().includes(searchString.toLowerCase())) &&
             Number(cube.difficulty) >= Number(from) &&
             Number(cube.difficulty) <= Number(to));
     });
